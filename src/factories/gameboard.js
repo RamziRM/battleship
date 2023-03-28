@@ -3,8 +3,13 @@ const Ship = require('./ship');
 // Gameboard factory function
 function Gameboard() {
     const board = [];
+    // get board
+    function getBoard() {
+        return board;
+    }
 
-    // Create 10x10 board
+    // Create 10x10 board - 2D array
+    // outer loop creates rows (y) - inner loop creates columns (x)
     for (let i = 0; i < 10; i++) {
         board.push([]);
         for (let j = 0; j < 10; j++) {
@@ -28,14 +33,15 @@ function Gameboard() {
     const ships = shipTypes.map(ship => Ship(ship.name, ship.length));
 
     // Place ships on board
+    // in 2d array: first index is row (y), second index is column (x)
     function placeShip(ship, x, y, isHorizontal) {
         if (isHorizontal) {
           for (let i = 0; i < ship.length; i++) {
-            board[x][y+i] = { ship: ship, hit: false };
+            board[y][x+i] = { ship: ship, hit: false };
           }
         } else {
           for (let i = 0; i < ship.length; i++) {
-            board[x+i][y] = { ship: ship, hit: false };
+            board[y+i][x] = { ship: ship, hit: false };
           }
         }
     }
@@ -63,9 +69,9 @@ function Gameboard() {
 
     // Receive attack
     function receiveAttack(x, y) {
-        board[x][y].hit = true;
-        if (board[x][y].ship) {
-            board[x][y].ship.hit();
+        board[y][x].hit = true;
+        if (board[y][x].ship) {
+            board[y][x].ship.hit();
         }
     }
 
@@ -83,15 +89,41 @@ function Gameboard() {
         return this.length === this.hits;
     }
 
+    // function to prevent out of bounds placement and overlapping ships
+    function isValidPlacement(ship, x, y, isHorizontal) {
+        if (isHorizontal) {
+            if (x + ship.length > 10) {
+                return false;
+            }
+        } else {
+            if (y + ship.length > 10) {
+                return false;
+            }
+        }
+
+        for (let i = 0; i < ship.length; i++) {
+            if (isHorizontal) {
+                if (board[y][x+i].ship) {
+                    return false;
+                }
+            } else {
+                if (board[y+i][x].ship) {
+                    return false;
+                }
+            }
+        }
+    }
+
     return {
-        board,
+        getBoard,
         ships,
         placeShip,
         randomPlaceShips,
         receiveAttack,
         missedAttacks,
         allSunk,
-        isSunk
+        isSunk,
+        isValidPlacement
     };
 }
 
