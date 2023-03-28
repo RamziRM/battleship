@@ -1,4 +1,4 @@
-const gameboard = require('./gameboard');
+const gameboard = require('./factories/gameboard');
 
 function Player() {
     const ownBoard = gameboard();
@@ -33,20 +33,13 @@ function Player() {
         });
     }
 
-    function getOwnBoard() {
-        return ownBoard;
-    }
 
-    function getEnemyBoard() {
-        return enemyBoard;
-    }
-
-    return { 
+    return {
+        ownBoard,
+        enemyBoard,
         attack,
         randomAttack,
-        placeShipsRandomly, 
-        getOwnBoard, 
-        getEnemyBoard 
+        placeShipsRandomly
     };
 
 }
