@@ -80,6 +80,11 @@ function Gameboard() {
         return board.flat().filter(square => square.hit && !square.ship);
     }
 
+    // Check if cell has been hit
+    function isHit(x, y) {
+        return board[y][x].hit;
+    }
+
     // Check if all ships are sunk
     function allSunk() {
         return ships.every(ship => ship.isSunk());
@@ -121,6 +126,7 @@ function Gameboard() {
         randomPlaceShips,
         receiveAttack,
         missedAttacks,
+        isHit,
         allSunk,
         isSunk,
         isValidPlacement
