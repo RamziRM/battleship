@@ -119,6 +119,21 @@ function Gameboard() {
         }
     }
 
+    // reset board
+    function resetBoard() {
+        for (let i = 0; i < 10; i++) {
+            for (let j = 0; j < 10; j++) {
+                board[i][j] = {
+                    x: j,
+                    y: i,
+                    hit: false,
+                    ship: null
+                };
+            }
+        }
+    }
+
+
     return {
         getBoard,
         ships,
@@ -129,7 +144,8 @@ function Gameboard() {
         isHit,
         allSunk,
         isSunk,
-        isValidPlacement
+        isValidPlacement,
+        resetBoard
     };
 }
 
