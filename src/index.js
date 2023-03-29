@@ -1,3 +1,3 @@
-import { loadUI } from './ui.js';
+import {loadUI} from './ui.js';
 
 loadUI();

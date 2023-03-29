@@ -185,6 +185,4 @@ function gameEndingPopUp() {
     });
 }
 
-
-
 module.exports = loadUI;
