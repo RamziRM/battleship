@@ -30,4 +30,21 @@ function mainGame() {
         return enemy;
     }
 
+    // restart game
+    function restartGame() {
+        human.ownBoard.resetBoard();
+        enemy.enemyBoard.resetBoard();
+        turn = 0;
+    };
+
+    // return functions
+    return {
+        playRound,
+        getHuman,
+        getEnemy,
+        restartGame
+    }
 }
+
+module.exports = mainGame;
+
