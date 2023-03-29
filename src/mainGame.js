@@ -30,6 +30,10 @@ function mainGame() {
         return enemy;
     }
 
+    function hasGameFinished() {
+        return human.ownBoard.allSunk() || enemy.enemyBoard.allSunk();
+    }
+
     // restart game
     function restartGame() {
         human.ownBoard.resetBoard();
@@ -42,6 +46,7 @@ function mainGame() {
         playRound,
         getHuman,
         getEnemy,
+        hasGameFinished,
         restartGame
     }
 }

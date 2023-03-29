@@ -34,13 +34,13 @@ function createMain() {
     const enemyBoard = createInitialBoard();
 
     humanBoard.classList.add('human');
-    computerBoard.classList.add('computer');
-    computerBoard.classList.add('interact');
+    enemyBoard.classList.add('enemy');
+    enemyBoard.classList.add('interact');
 
     // make boards interactable to attack
-    makeAttackable(humanBoard, enemyBoard);
+    makeAttackable(enemyBoard, humanBoard);
 
-    main.appendChild(humanBoard, enemyBoard);
+    main.append(enemyBoard, humanBoard);
     return main;
 }
 
@@ -62,26 +62,6 @@ function createInitialBoard() {
     return board;
 }
 
-// make both boards interactable to attack - By clicking on the computer board
-// play round with coordinates of clicked square - then update both boards with new round info
-// last check if game over - if so, trigger loadGameOverPopup()
-function makeAttackable(enemyBoard, humanBoard) {
-    const enemyBoardRows = enemyBoard.childNodes;
-    for (let x = 0; x < 10; ++x) {
-        const boardSquares = enemyBoardRows[x].childNodes;
-        for (let y = 0; y < 10; ++y) {
-            boardSquares[y].addEventListener('click', () => {
-                game.playRound([x, y]);
-                renderBoard(game.getEnemy().enemyBoard, enemyBoard);
-                renderBoard(game.getHuman().ownBoard, humanBoard);
-
-                if (game.hasGameFinished())
-                gameEndingPopUp();
-            });
-        }
-    }
-}
-
 // renderBoard
 // 
 function renderBoard(boardToRender, boardOnScreen) {
@@ -97,6 +77,26 @@ function renderBoard(boardToRender, boardOnScreen) {
             } else if (squareInfo.isMissed) {
                 square.classList.add('missed');
             }
+        }
+    }
+}
+
+// make both boards interactable to attack - By clicking on the computer board
+// play round with coordinates of clicked square - then update both boards with new round info
+// last check if game over - if so, trigger loadGameOverPopup()
+function makeAttackable(enemyBoard, humanBoard) {
+    const enemyBoardRows = enemyBoard.childNodes;
+    for (let x = 0; x < 10; ++x) {
+        const boardSquares = enemyBoardRows[x].childNodes;
+        for (let y = 0; y < 10; ++y) {
+            boardSquares[y].addEventListener('click', () => {
+                mainGame.playRound([x, y]);
+                renderBoard(mainGame.getEnemy().enemyBoard, enemyBoard);
+                renderBoard(mainGame.getHuman().ownBoard, humanBoard);
+
+                if (mainGame.hasGameFinished())
+                gameEndingPopUp();
+            });
         }
     }
 }
@@ -146,7 +146,7 @@ function shipPlacementPopUp() {
         }
     }
 
-    game.getEnemy().placeShipsRandomly();
+    mainGame.getEnemy().placeShipsRandomly();
 
     popUp.append(heading, info, rotateButton, userBoard);
     background.appendChild(popUp);
