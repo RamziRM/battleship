@@ -31,6 +31,11 @@ function Gameboard() {
     ];
 
     const ships = shipTypes.map(ship => Ship(ship.name, ship.length));
+    // howt to call ships array?
+    // ships[0].name is Carrier
+    // 
+    // shipTypes is an array of objects with name and length properties - ships is an array of ship objects. the map function creates a new array of ship objects from the shipTypes array of objects. New array looks like this: 
+    // [{name: 'Carrier', length: 5, hits: 0, isSunk: false}, {name: 'Battleship', length: 4, hits: 0, isSunk: false}, etc.]
 
     // Place ships on board
     // in 2d array: first index is row (y), second index is column (x)
@@ -95,6 +100,7 @@ function Gameboard() {
     }
 
     // function to prevent out of bounds placement and overlapping ships
+    // returns true if placement is valid
     function isValidPlacement(ship, x, y, isHorizontal) {
         if (isHorizontal) {
             if (x + ship.length > 10) {
