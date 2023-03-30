@@ -1,6 +1,7 @@
 // import
 const mainGame = require('./mainGame.js');
 const ship = require('./factories/ship.js');
+const gameboard = require('./factories/gameboard.js');
 
 // create the UI fully through JS
 // initially 
@@ -9,7 +10,7 @@ function loadUI() {
     const main = createMain();
     const footer = createFooter();
 
-    document.body.appendChild(header, main, footer);
+    document.body.append(header, main, footer);
 
     shipPlacementPopUp();
 }
@@ -120,22 +121,22 @@ function shipPlacementPopUp() {
     });
     rotateButton.textContent = "Rotate";
 
-    const userBoard = createInitialBoard();
-    userBoard.classList.add("interactible");
+    const humanBoard = createInitialBoard();
+    humanBoard.classList.add("interactible");
     let isHorizontal = true;
     let current = 0;
     const shipLengths = [5, 4, 3, 3, 2];
 
-    const boardRows = userBoard.childNodes;
-    const board = game.getUser().ownGameboard;
+    const boardRows = humanBoard.childNodes;
+    const board = game.getUser().ownBoard;
     for (let x = 0; x < 10; ++x) {
         const boardSquares = boardRows[x].childNodes;
         for (let y = 0; y < 10; ++y) {
             boardSquares[y].addEventListener('click', () => {
-                if (board.isOutOfBounds([x, y], shipLengths[current], isHorizontal) || board.willCollide([x, y], shipLengths[current], isHorizontal))
+                if (board.isValidPlacement([x, y], shipLengths[current], isHorizontal))
                     return ;
                 board.placeShip([x, y], shipLengths[current], isHorizontal);
-                renderBoard(board, userBoard);
+                renderBoard(board, humanBoard);
 
                 if (current++ == 4) {
                     const boardOnScreen = document.querySelector(".user");
@@ -148,7 +149,7 @@ function shipPlacementPopUp() {
 
     mainGame.getEnemy().placeShipsRandomly();
 
-    popUp.append(heading, info, rotateButton, userBoard);
+    popUp.append(heading, info, rotateButton, humanBoard);
     background.appendChild(popUp);
 
     document.body.appendChild(background);
