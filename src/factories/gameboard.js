@@ -9,17 +9,17 @@ function Gameboard() {
     }
 
     // Create 10x10 board - 2D array
-    // outer loop creates rows (y) - inner loop creates columns (x)
-    for (let i = 0; i < 10; i++) {
-        board.push([]);
-        for (let j = 0; j < 10; j++) {
-            board[i].push({
-                x: j,
-                y: i,
+    // each cell is an object with hit and ship properties
+    // inner array is a row, outer array is a column
+    for (let x = 0; x < 10; x++) {
+        let row = [];
+        for (let y = 0; y < 10; y++) {
+            row.push({
                 hit: false,
                 ship: null
             });
         }
+        board.push(row);
     }
 
     const shipTypes = [
