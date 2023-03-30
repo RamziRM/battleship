@@ -3,23 +3,23 @@
 
 function Ship(length) {
     let hits = 0;
-    let isSunk = false;
 
     function hit() {
-    hits++;
-    if (hits === length) {
-        isSunk = true;
-    }
+        hits++;
+    };
+    
+    function isSunk() {
+        return (hits >= length);
     }
 
-    function getIsSunk() {
-    return isSunk;
+    function getHits() {
+        return hits;
     }
 
     return { 
-        length, 
         hit, 
-        getIsSunk
+        isSunk,
+        getHits
     };
 }
 
