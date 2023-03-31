@@ -13,7 +13,7 @@ function Gameboard() {
         for (let y = 0; y < 10; y++) {
             row.push({
                 hit: false,
-                ship: null
+                containsShip: -1
             });
         }
         board.push(row);
@@ -45,78 +45,57 @@ function Gameboard() {
         }
     }
 
-    // Randomly place ships on board
-    function randomPlaceShips() {
-        ships.forEach(ship => {
-            let isHorizontal = Math.random() < 0.5;
-            let x = Math.floor(Math.random() * 10);
-            let y = Math.floor(Math.random() * 10);
-
-            if (isHorizontal) {
-                if (x + ship.length > 10) {
-                    x -= ship.length;
-                }
-            } else {
-                if (y + ship.length > 10) {
-                    y -= ship.length;
-                }
-            }
-
-            placeShip(ship, x, y, isHorizontal);
-        });
-    }
-
     // Receive attack
-    function receiveAttack(x, y) {
-        board[y][x].hit = true;
-        if (board[y][x].ship) {
-            board[y][x].ship.hit();
+    // coords = [y, x]
+    function receiveAttack(coords) {
+        board[coords[0]][coords[1]].hit = true;
+        if (board[coords[0]][coords[1]].containsShip != -1) {
+            ships[board[coords[0]][coords[1]].containsShip].hit();
         }
     }
 
-    // Track missed attacks on board
-    function missedAttacks() {
-        return board.flat().filter(square => square.hit && !square.ship);
+    function hasAttack(coords) {
+        return board[coords[0]][coords[1]].hit;
     }
 
-    // Check if cell has been hit
-    function isHit(x, y) {
-        return board[y][x].hit;
+    function hasShip(coords) {
+        return board[coords[0]][coords[1]].containsShip;
     }
 
-    // Check if all ships are sunk
-    function allSunk() {
-        return ships.every(ship => ship.isSunk());
+    function getBoard() {
+        return board;
     }
 
-    function isSunk() {
-        return this.length === this.hits;
-    }
-
-    // function to prevent out of bounds placement and overlapping ships
-    // returns true if placement is valid
-    function isValidPlacement(ship, x, y, isHorizontal) {
+    // ** returns true if out of bounds
+    function isOutOfBounds(startArr, length, isHorizontal) {
         if (isHorizontal) {
-            if (x + ship.length > 10) {
-                return false;
+            return startArr[1] + length > 10;
+        } else {
+            return startArr[0] + length > 10;
+        }
+    }
+
+    // ** returns true if ship overlaps
+    function willOverlap(startArr, length, isHorizontal) {
+        if (isHorizontal) {
+            for (let i = startArr[1]; i < startArr[1] + length; ++i) {
+                if (board[startArr[0]][i].containsShip != -1) {
+                    return true;
+                }
             }
         } else {
-            if (y + ship.length > 10) {
-                return false;
-            }
-        }
-
-        for (let i = 0; i < ship.length; i++) {
-            if (isHorizontal) {
-                if (board[y][x+i].ship) {
-                    return false;
-                }
-            } else {
-                if (board[y+i][x].ship) {
-                    return false;
+            for (let i = startArr[0]; i < startArr[0] + length; ++i) {
+                if (board[i][startArr[1]].containsShip != -1) {
+                    return true;
                 }
             }
         }
+        return false;
+    }
+    
+    // Check if all ships are sunk - isSunk() is a method of Ship factory f()
+    function allSunk() {
+        return ships.every(ship => ship.isSunk());
     }
 
     // reset board
