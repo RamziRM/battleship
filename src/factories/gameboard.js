@@ -98,32 +98,31 @@ function Gameboard() {
         return ships.every(ship => ship.isSunk());
     }
 
-    // reset board
-    function resetBoard() {
-        for (let i = 0; i < 10; i++) {
-            for (let j = 0; j < 10; j++) {
-                board[i][j] = {
-                    x: j,
-                    y: i,
-                    hit: false,
-                    ship: null
-                };
-            }
-        }
+    function shipCount() {
+        return ships.length;
     }
 
+    // reset board
+    function resetBoard() {
+        for (let x = 0; x < 10; x++) {
+            for (let y = 0; y < 10; y++) {
+                board[y][x].hit = false;
+                board[y][x].containsShip = -1;
+            }
+        }
+        ships = [];
+    }
 
     return {
-        getBoard,
-        ships,
         placeShip,
-        randomPlaceShips,
         receiveAttack,
-        missedAttacks,
-        isHit,
+        hasAttack,
+        hasShip,
+        getBoard,
+        isOutOfBounds,
+        willOverlap,
         allSunk,
-        isSunk,
-        isValidPlacement,
+        shipCount,
         resetBoard
     };
 }
