@@ -2,44 +2,48 @@ const gameboard = require('./factories/gameboard');
 
 function Player() {
     const ownBoard = gameboard();
-    const enemyBoard = gameboard();
 
-    function attack(x, y, enemyBoard) {
-        return enemyBoard.receiveAttack(x, y);
+    function attack(cord, pToAttack) {
+        pToAttack.ownboard.receiveAttack(cord);
     }
+
   
     function randomAttack(pToAttack) {
       let x = Math.floor(Math.random() * 10);
       let y = Math.floor(Math.random() * 10);
-      while (missedAttacks.has(`${x},${y}`)) {
+      while (pToAttack.ownBoard.hasAttack([y, x]));
+      pToAttack.ownBoard.receiveAttack([y, x]);
+    }
+
+    // place ships randomly 
+    function placeShipsRandomly() {
+        let length = 5;
+        let isHorizontal;
+        while (ownBoard.shipCount() != 5) {
+            isHorizontal = Math.random() < 0.5; 
+            ownBoard.placeShip(findLegalCord(length, isHorizontal), length, isHorizontal);
+            if (length == 3) {
+                isHorizontal = Math.random() < 0.5;
+                ownBoard.placeShip(findLegalCord(length, isHorizontal), length, isHorizontal);
+            }
+            length--;
+        }
+    }
+
+    // find a placeable cord for a ship
+    function findLegalCord(length, isHorizontal) {
         x = Math.floor(Math.random() * 10);
         y = Math.floor(Math.random() * 10);
-      }
-      return [x, y];
+        while (ownBoard.isOutOfBounds([y, x], length, isHorizontal) || ownBoard.willOverlap([y, x], length, isHorizontal));
+        return [y, x];
     }
-
-    // place ships randomly - within bounds and not overlapping using isValidPlacement function
-    function placeShipsRandomly() {
-        ownBoard.ships.forEach(ship => {
-            let x = Math.floor(Math.random() * 10);
-            let y = Math.floor(Math.random() * 10);
-            let isHorizontal = Math.random() < 0.5;
-            while (!ownBoard.isValidPlacement(ship, x, y, isHorizontal)) {
-                x = Math.floor(Math.random() * 10);
-                y = Math.floor(Math.random() * 10);
-                isHorizontal = Math.random() < 0.5;
-            }
-            ownBoard.placeShip(ship, x, y, isHorizontal);
-        });
-    }
-
 
     return {
         ownBoard,
-        enemyBoard,
         attack,
         randomAttack,
-        placeShipsRandomly
+        placeShipsRandomly,
+        findLegalCord
     };
 
 }
