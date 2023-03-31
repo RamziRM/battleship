@@ -3,10 +3,7 @@ const Ship = require('./ship');
 // Gameboard factory function
 function Gameboard() {
     const board = [];
-    // get board
-    function getBoard() {
-        return board;
-    }
+    const ships = [];
 
     // Create 10x10 board - 2D array
     // each cell is an object with hit and ship properties
@@ -22,32 +19,29 @@ function Gameboard() {
         board.push(row);
     }
 
-    const shipTypes = [
-        { name: 'Carrier', length: 5 },
-        { name: 'Battleship', length: 4 },
-        { name: 'Cruiser', length: 3 },
-        { name: 'Submarine', length: 3 },
-        { name: 'Destroyer', length: 2 }
-    ];
+    // const shipTypes = [
+    //     { name: 'Carrier', length: 5 },
+    //     { name: 'Battleship', length: 4 },
+    //     { name: 'Cruiser', length: 3 },
+    //     { name: 'Submarine', length: 3 },
+    //     { name: 'Destroyer', length: 2 }
+    // ];
 
-    const ships = shipTypes.map(ship => Ship(ship.name, ship.length));
-    // howt to call ships array?
-    // ships[0].name is Carrier
-    // 
-    // shipTypes is an array of objects with name and length properties - ships is an array of ship objects. the map function creates a new array of ship objects from the shipTypes array of objects. New array looks like this: 
-    // [{name: 'Carrier', length: 5, hits: 0, isSunk: false}, {name: 'Battleship', length: 4, hits: 0, isSunk: false}, etc.]
-
-    // Place ships on board
-    // in 2d array: first index is row (y), second index is column (x)
-    function placeShip(ship, x, y, isHorizontal) {
+    // startArr = [y, x] - array of coordinates
+    // startArr[0] = y - (row) -- startArr[1] = x - (col)
+    function placeShip(startArr, length, isHorizontal) {
+        // new Ship object with length
+        let shipToPlace = Ship(length);
+        // push to empty ships array
+        ships.push(shipToPlace);
         if (isHorizontal) {
-          for (let i = 0; i < ship.length; i++) {
-            board[y][x+i] = { ship: ship, hit: false };
-          }
+            for (let i = startArr[1]; i < startArr[1] + length; ++i) {
+                board[startArr[0]][i].containsShip = ships.length - 1;
+            }
         } else {
-          for (let i = 0; i < ship.length; i++) {
-            board[y+i][x] = { ship: ship, hit: false };
-          }
+            for (let i = startArr[0]; i < startArr[0] + length; ++i) {
+                board[i][startArr[1]].containsShip = ships.length - 1;
+            }
         }
     }
 
