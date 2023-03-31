@@ -19,14 +19,6 @@ function Gameboard() {
         board.push(row);
     }
 
-    // const shipTypes = [
-    //     { name: 'Carrier', length: 5 },
-    //     { name: 'Battleship', length: 4 },
-    //     { name: 'Cruiser', length: 3 },
-    //     { name: 'Submarine', length: 3 },
-    //     { name: 'Destroyer', length: 2 }
-    // ];
-
     // startArr = [y, x] - array of coordinates
     // startArr[0] = y - (row) -- startArr[1] = x - (col)
     function placeShip(startArr, length, isHorizontal) {
@@ -110,7 +102,7 @@ function Gameboard() {
                 board[y][x].containsShip = -1;
             }
         }
-        ships = [];
+        ships.length = 0;
     }
 
     return {
