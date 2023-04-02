@@ -3,8 +3,8 @@ const gameboard = require('./factories/gameboard');
 function Player() {
     const ownBoard = gameboard();
 
-    function attack(cord, pToAttack) {
-        pToAttack.ownboard.receiveAttack(cord);
+    function attack(coords, pToAttack) {
+        pToAttack.ownBoard.receiveAttack(coords);
     }
 
   
