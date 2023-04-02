@@ -2,7 +2,7 @@
 
 var gameboard = require('./factories/gameboard');
 function player() {
-  var ownBoard = gameboard();
+  let ownBoard = gameboard();
   function attack(coords, pToAttack) {
     pToAttack.ownBoard.receiveAttack(coords);
   }
