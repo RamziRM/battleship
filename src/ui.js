@@ -40,7 +40,7 @@ function shipPlacementPopUp() {
     const shipLengths = [5, 4, 3, 3, 2];
 
     const boardRows = userBoard.childNodes;
-    const board = game.getUser().ownGameboard;
+    const board = gameboard.getUser().ownBoard;
 
     for (let x = 0; x < 10; ++x) {
         const boardSquares = boardRows[x].childNodes;
@@ -119,7 +119,7 @@ function renderBoard(boardToRender, boardOnScreen) {
             if (boardToRender.hasShip([x, y]) != -1) {
                 if (boardToRender.hasBeenAttacked([x, y]))
                     boardSquares[y].style.backgroundColor = rootStyles.getPropertyValue("--hit-ship-square-color");
-                else if (boardToRender == game.getUser().ownGameboard)
+                else if (boardToRender == gameboard.getUser().ownGameboard)
                     boardSquares[y].style.backgroundColor = rootStyles.getPropertyValue("--ship-square-color");
             } else {
                 if (boardToRender.hasBeenAttacked([x, y]))
@@ -135,11 +135,11 @@ function makeAttackable(enemyBoard, userBoard) {
         const boardSquares = enemyBoardRows[x].childNodes;
         for (let y = 0; y < 10; ++y) {
             boardSquares[y].addEventListener('click', () => {
-                game.playRound([x, y]);
-                renderBoard(game.getEnemy().ownGameboard, enemyBoard);
-                renderBoard(game.getUser().ownGameboard, userBoard);
+                gameboard.playRound([x, y]);
+                renderBoard(gameboard.getEnemy().ownGameboard, enemyBoard);
+                renderBoard(gameboard.getUser().ownGameboard, userBoard);
 
-                if (game.hasGameFinished())
+                if (gameboard.hasGameFinished())
                     loadGameEndingPopUp();
             });
         }
@@ -163,12 +163,12 @@ function loadGameEndingPopUp() {
     popUp.classList.add("popUp");
 
     const heading = document.createElement("h2");
-    heading.textContent = game.getUser().ownGameboard.allShipsSunk() ? "You lost" : "You won";
+    heading.textContent = gameboard.getUser().ownGameboard.allShipsSunk() ? "You lost" : "You won";
 
     const playAgain = document.createElement("button");
     playAgain.textContent = "Play again";
     playAgain.addEventListener("click", () => {
-        game.restartGame();
+        gameboard.restartGame();
         resetBoardAppearance(document.querySelector(".user"));
         resetBoardAppearance(document.querySelector(".enemy"));
         background.remove();
