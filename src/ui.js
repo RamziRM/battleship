@@ -40,7 +40,7 @@ function shipPlacementPopUp() {
     const shipLengths = [5, 4, 3, 3, 2];
 
     const boardRows = userBoard.childNodes;
-    const board = gameboard.getUser().ownBoard;
+    const board = mainGame().getHuman().ownBoard;
 
     for (let x = 0; x < 10; ++x) {
         const boardSquares = boardRows[x].childNodes;
@@ -60,7 +60,7 @@ function shipPlacementPopUp() {
         }
     }
 
-    game.getEnemy().placeShipsRandomly();
+    mainGame().getEnemy().placeShipsRandomly();
 
     popUp.append(heading, info, rotateButton, userBoard);
     background.appendChild(popUp);
@@ -117,9 +117,9 @@ function renderBoard(boardToRender, boardOnScreen) {
         const boardSquares = boardOnScreenRows[x].childNodes;
         for (let y = 0; y < 10; ++y) {
             if (boardToRender.hasShip([x, y]) != -1) {
-                if (boardToRender.hasBeenAttacked([x, y]))
+                if (boardToRender.hasAttack([x, y]))
                     boardSquares[y].style.backgroundColor = rootStyles.getPropertyValue("--hit-ship-square-color");
-                else if (boardToRender == gameboard.getUser().ownGameboard)
+                else if (boardToRender == mainGame().getHuman().ownGameboard)
                     boardSquares[y].style.backgroundColor = rootStyles.getPropertyValue("--ship-square-color");
             } else {
                 if (boardToRender.hasBeenAttacked([x, y]))
@@ -135,11 +135,10 @@ function makeAttackable(enemyBoard, userBoard) {
         const boardSquares = enemyBoardRows[x].childNodes;
         for (let y = 0; y < 10; ++y) {
             boardSquares[y].addEventListener('click', () => {
-                gameboard.playRound([x, y]);
-                renderBoard(gameboard.getEnemy().ownGameboard, enemyBoard);
-                renderBoard(gameboard.getUser().ownGameboard, userBoard);
+                renderBoard(mainGame().getEnemy().ownGameboard, enemyBoard);
+                renderBoard(mainGame().getHuman().ownGameboard, userBoard);
 
-                if (gameboard.hasGameFinished())
+                if (mainGame().hasGameFinished())
                     loadGameEndingPopUp();
             });
         }
@@ -150,7 +149,7 @@ function createFooter() {
     const footer = document.createElement("footer");
     const authorNote = document.createElement("p");
 
-    authorNote.textContent = "Copyright © 2022 Peepachu";
+    authorNote.textContent = "A copy - Soon modified look :)";
     footer.appendChild(authorNote);
     return footer;
 }
@@ -163,12 +162,12 @@ function loadGameEndingPopUp() {
     popUp.classList.add("popUp");
 
     const heading = document.createElement("h2");
-    heading.textContent = gameboard.getUser().ownGameboard.allShipsSunk() ? "You lost" : "You won";
+    heading.textContent = mainGame().getHuman().ownGameboard.allShipsSunk() ? "You lost" : "You won";
 
     const playAgain = document.createElement("button");
     playAgain.textContent = "Play again";
     playAgain.addEventListener("click", () => {
-        gameboard.restartGame();
+        mainGame().restartGame();
         resetBoardAppearance(document.querySelector(".user"));
         resetBoardAppearance(document.querySelector(".enemy"));
         background.remove();
