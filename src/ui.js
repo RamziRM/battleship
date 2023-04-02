@@ -5,7 +5,7 @@ const gameboard = require('./factories/gameboard.js');
 
 // create the UI fully through JS
 
-function loadUI() {
+function loadUI(mainGame) {
     const header = createHeader();
     const mainContent = createMainContent();
     const footer = createFooter();
@@ -40,15 +40,15 @@ function shipPlacementPopUp() {
     const shipLengths = [5, 4, 3, 3, 2];
 
     const boardRows = userBoard.childNodes;
-    const board = mainGame().getHuman().ownBoard;
+    const board = mainGame().getHuman.ownBoard;
 
-    for (let x = 0; x < 10; ++x) {
-        const boardSquares = boardRows[x].childNodes;
-        for (let y = 0; y < 10; ++y) {
+    for (let y = 0; y < 10; ++y) {
+        const boardSquares = boardRows[y].childNodes;
+        for (let x = 0; x < 10; ++x) {
             boardSquares[y].addEventListener('click', () => {
-                if (board.isOutOfBounds([x, y], shipLengths[current], isHorizontal) || board.willOverlap([x, y], shipLengths[current], isHorizontal))
+                if (board.isOutOfBounds([y, x], shipLengths[current], isHorizontal) || board.willOverlap([y, x], shipLengths[current], isHorizontal))
                     return ;
-                board.placeShip([x, y], shipLengths[current], isHorizontal);
+                board.placeShip([y, x], shipLengths[current], isHorizontal);
                 renderBoard(board, userBoard);
 
                 if (current++ == 4) {
@@ -60,7 +60,7 @@ function shipPlacementPopUp() {
         }
     }
 
-    mainGame().getEnemy().placeShipsRandomly();
+    mainGame().getEnemy.placeShipsRandomly;
 
     popUp.append(heading, info, rotateButton, userBoard);
     background.appendChild(popUp);
@@ -119,7 +119,7 @@ function renderBoard(boardToRender, boardOnScreen) {
             if (boardToRender.hasShip([x, y]) != -1) {
                 if (boardToRender.hasAttack([x, y]))
                     boardSquares[y].style.backgroundColor = rootStyles.getPropertyValue("--hit-ship-square-color");
-                else if (boardToRender == mainGame().getHuman().ownGameboard)
+                else if (boardToRender == mainGame().getHuman.ownBoard)
                     boardSquares[y].style.backgroundColor = rootStyles.getPropertyValue("--ship-square-color");
             } else {
                 if (boardToRender.hasBeenAttacked([x, y]))
@@ -135,10 +135,10 @@ function makeAttackable(enemyBoard, userBoard) {
         const boardSquares = enemyBoardRows[x].childNodes;
         for (let y = 0; y < 10; ++y) {
             boardSquares[y].addEventListener('click', () => {
-                renderBoard(mainGame().getEnemy().ownGameboard, enemyBoard);
-                renderBoard(mainGame().getHuman().ownGameboard, userBoard);
+                renderBoard(mainGame().getEnemy.ownBoard, enemyBoard);
+                renderBoard(mainGame().getHuman.ownBoard, userBoard);
 
-                if (mainGame().hasGameFinished())
+                if (mainGame.hasGameFinished())
                     loadGameEndingPopUp();
             });
         }
@@ -162,16 +162,16 @@ function loadGameEndingPopUp() {
     popUp.classList.add("popUp");
 
     const heading = document.createElement("h2");
-    heading.textContent = mainGame().getHuman().ownGameboard.allShipsSunk() ? "You lost" : "You won";
+    heading.textContent = mainGame.getHuman().ownBoard.allSunk() ? "You lost" : "You won";
 
     const playAgain = document.createElement("button");
     playAgain.textContent = "Play again";
     playAgain.addEventListener("click", () => {
-        mainGame().restartGame();
+        mainGame.restartGame();
         resetBoardAppearance(document.querySelector(".user"));
         resetBoardAppearance(document.querySelector(".enemy"));
         background.remove();
-        loadShipPlacementPopUp();
+        shipPlacementPopUp();
     });
 
     popUp.append(heading, playAgain);

@@ -4,9 +4,10 @@ const player = require('./player.js');
 // main game loop
 // 1. create players
 function mainGame() {
+    console.log("mainGame function called");
+
     let human = player();
     let enemy = player();
-    let turn = 0;
 
     // playRound function
     // play round: recieve human choice, if square hit: true return, if not, human.attack, computer.randomAttack
