@@ -22,10 +22,12 @@ function Player() {
         while (ownBoard.shipCount() != 5) {
             isHorizontal = Math.random() < 0.5; 
             ownBoard.placeShip(findLegalCord(length, isHorizontal), length, isHorizontal);
+            // to create 2nd ship of 3 length
             if (length == 3) {
                 isHorizontal = Math.random() < 0.5;
                 ownBoard.placeShip(findLegalCord(length, isHorizontal), length, isHorizontal);
             }
+            // decrease l per loop iteration - (max 5 ships)
             length--;
         }
     }
