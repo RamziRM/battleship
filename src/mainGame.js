@@ -23,11 +23,11 @@ function mainGame() {
     }
 
     // get human and get enemy
-    function getHuman() {
+    const getHuman = () => {
         return human;
     }
 
-    function getEnemy() {
+    const getEnemy = () => {
         return enemy;
     }
 
