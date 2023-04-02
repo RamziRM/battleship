@@ -1,3 +1,3 @@
-import {loadUI} from './ui.js';
+const loadUI = require('./ui.js');
 
 loadUI();
