@@ -64,7 +64,7 @@ function loadShipPlacementPopUp() {
         }
     }
 
-    game().getEnemy().placeShipsRandomly();
+    game.getEnemy().placeShipsRandomly();
 
     popUp.append(heading, info, rotateButton, userBoard);
     background.appendChild(popUp);
@@ -124,7 +124,7 @@ function renderBoard(boardToRender, boardOnScreen) {
         for (let y = 0; y < 10; ++y) {
             if (boardToRender.hasShip([x, y]) != -1) {
                 console.log("has ship");
-                console.log(game().getHuman())
+                console.log(game.getHuman())
                 console.log(game)
                 if (boardToRender.hasAttack([x, y]))
                     boardSquares[y].style.backgroundColor = rootStyles.getPropertyValue("--hit-ship-square-color");
