@@ -53,7 +53,6 @@ function loadShipPlacementPopUp() {
                 renderBoard(board, userBoard);
                 if (current++ == 4) {
                     console.log(current);
-                } else {
                     const boardOnScreen = document.querySelector(".user");
                     renderBoard(board, boardOnScreen);
                     background.remove();
@@ -176,7 +175,7 @@ function loadGameEndingPopUp() {
     const playAgain = document.createElement("button");
     playAgain.textContent = "Play again";
     playAgain.addEventListener("click", () => {
-        game.restartGame;
+        game.restartGame();
         resetBoardAppearance(document.querySelector(".user"));
         resetBoardAppearance(document.querySelector(".enemy"));
         background.remove();
