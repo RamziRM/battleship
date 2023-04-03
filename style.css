@@ -5,7 +5,7 @@
 
 :root {
     --main-background-color: darkslategrey;
-    --ship-square-color: rgb(68, 68, 68);
+    --ship-square-color: yellow;
     --empty-square-color: rgb(133, 255, 179);;
     --hit-ship-square-color: rgb(255, 133, 133);;
     --square-hover-color: rgb(221, 221, 221);
