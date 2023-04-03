@@ -1,109 +1,72 @@
 // import
-const mainGame = require('./mainGame.js');
+import {game} from "./mainGame.js";
 const ship = require('./factories/ship.js');
 const gameboard = require('./factories/gameboard.js');
 
-function loadUI() {
+export function loadUI() {
     const header = createHeader();
     const mainContent = createMainContent();
     const footer = createFooter();
 
     document.body.append(header, mainContent, footer);
-    // shipPlacementPopUp();
+    loadShipPlacementPopUp();
+}
+
+function loadShipPlacementPopUp() {
+    const background = document.createElement("div");
+    background.classList.add("overlay");
+
+    const popUp = document.createElement("div");
+    popUp.classList.add("popUp");
+
+    const heading = document.createElement("h2");
+    heading.textContent = "Welcome to the battleship game";
+
+    const info = document.createElement("span");
+    info.textContent = "Place your ships";
+
+    const rotateButton = document.createElement("button");
+    let isHorizontal = true;
+    rotateButton.addEventListener('click', () => {
+        isHorizontal = !isHorizontal;
+        console.log("Clicked rotateButton")
+    });
+    rotateButton.textContent = "Rotate";
+
     const userBoard = createInitialBoard();
     userBoard.classList.add("interactible");
-    let isHorizontal = true;
     let current = 0;
     const shipLengths = [5, 4, 3, 3, 2];
 
     const boardRows = userBoard.childNodes;
+    const board = game().getHuman().ownBoard;
+    for (let x = 0; x < 10; ++x) {
+        const boardSquares = boardRows[x].childNodes;
+        for (let y = 0; y < 10; ++y) {
+            boardSquares[y].addEventListener('click', () => {
+                console.log("Clicked square");
+                if (board.isOutOfBounds([x, y], shipLengths[current], isHorizontal) || board.willOverlap([x, y], shipLengths[current], isHorizontal))
+                    return alert("Invalid placement");
+                board.placeShip([x, y], shipLengths[current], isHorizontal);
+                renderBoard(board, userBoard);
+                if (current < 5) {
+                    current++;
+                } else {
+                    const boardOnScreen = document.querySelector(".user");
+                    renderBoard(board, boardOnScreen);
+                    background.remove();
+                }
+            });
+        }
+    }
 
-    const game = mainGame();
-    const human = game.getHuman();
-    const board = human.ownBoard;
-    // console.log(board);
+    game().getEnemy().placeShipsRandomly();
 
-    human.placeShipsRandomly();
+    popUp.append(heading, info, rotateButton, userBoard);
+    background.appendChild(popUp);
 
-    renderBoard(board, userBoard);
-    // const boardOnScreen = document.querySelector(".user");
-    // renderBoard(board, boardOnScreen);
-    // console.log(boardOnScreen);
-    console.log(userBoard);
-    mainContent.append(userBoard);
+    document.body.appendChild(background);
 }
-
-
-// console.log(mainGame().getHuman().placeShipsRandomly);
-mainGame().getHuman().placeShipsRandomly();
-mainGame().getEnemy().placeShipsRandomly();
-
-
-
-// function shipPlacementPopUp() {
-//     const background = document.createElement("div");
-//     background.classList.add("overlay");
-
-    // const popUp = document.createElement("div");
-    // popUp.classList.add("popUp");
-
-    // const heading = document.createElement("h2");
-    // heading.textContent = "Welcome to the battleship game";
-
-    // const info = document.createElement("span");
-    // info.textContent = "Place your ships";
-
-    // const rotateButton = document.createElement("button");
-    // rotateButton.addEventListener('click', () => {
-    //     isHorizontal = !isHorizontal;
-    // });
-    // rotateButton.textContent = "Rotate";
-
-    // const userBoard = createInitialBoard();
-    // userBoard.classList.add("interactible");
-    // let isHorizontal = true;
-    // let current = 0;
-    // const shipLengths = [5, 4, 3, 3, 2];
-
-    // const boardRows = userBoard.childNodes;
-
-    // const human = game.getHuman();
-    // const board = human.ownBoard;
-    // console.log(board);
-
-    // const boardTest = game.getHuman;
-    // console.log(boardTest);
-
-    // for (let y = 0; y < 10; ++y) {
-    //     const boardSquares = boardRows[y].childNodes;
-    //     for (let x = 0; x < 10; ++x) {
-    //         boardSquares[y].addEventListener('click', () => {
-    //             if (board.isOutOfBounds([y, x], shipLengths[current], isHorizontal) || board.willOverlap([y, x], shipLengths[current], isHorizontal))
-    //             // why does this not work?
-    //             // answer: because it's not a function, it's a property 
-    //             // how to fix: add () after the function name - solution:
-    //                 return ;
-    //             board.placeShip([y, x], shipLengths[current], isHorizontal);
-    //             renderBoard(board, userBoard);
-
-    //             if (current++ == 4) {
-    //                 const boardOnScreen = document.querySelector(".user");
-    //                 renderBoard(board, boardOnScreen);
-    //                 background.remove();
-    //             }
-    //         });
-    //     }
-    // }
-
-    // mainGame().getHuman.placeShipsRandomly;
-    // mainGame().getEnemy.placeShipsRandomly;
-
-    // popUp.append(heading, info, rotateButton, userBoard);
-    // background.appendChild(popUp);
-
-    // document.body.appendChild(background);
-    // background.remove();
-// }
 
 function createHeader() {
     const header = document.createElement("header");
@@ -129,6 +92,8 @@ function createMainContent() {
     return mainContent;
 }
 
+
+
 function createInitialBoard() {
     let board = document.createElement("div");
     board.classList.add("board");
@@ -148,90 +113,37 @@ function createInitialBoard() {
 }
 
 function renderBoard(boardToRender, boardOnScreen) {
-    const rootStyles = getComputedStyle(boardOnScreen);
+    const rootStyles = getComputedStyle(document.documentElement);
     const boardOnScreenRows = boardOnScreen.childNodes;
-    for (let y = 0; y < 10; ++y) {
-        const boardSquares = boardOnScreenRows[y].childNodes;
-        for (let x = 0; x < 10; ++x) {
-            let square = boardSquares[x];
-            // console.log(square);
-            // console.log(boardToRender);
-            // console.log(boardToRender.hasShip([y, x]));
-            let hasShip = boardToRender.hasShip([y, x]);
-            let hasAttack = boardToRender.hasAttack([y, x]);
-            if (hasShip != -1) {
-                if (hasAttack)
-                    boardSquares[x].style.backgroundColor = rootStyles.getPropertyValue("--hit-ship-square-color");
-                else if (boardToRender == mainGame().getHuman.ownBoard)
-                    boardSquares[x].style.backgroundColor = rootStyles.getPropertyValue("--ship-square-color");
+    for (let x = 0; x < 10; ++x) {
+        const boardSquares = boardOnScreenRows[x].childNodes;
+        for (let y = 0; y < 10; ++y) {
+            if (boardToRender.hasShip([x, y]) != -1) {
+                if (boardToRender.hasAttack([x, y]))
+                    boardSquares[y].style.backgroundColor = rootStyles.getPropertyValue("--hit-ship-square-color");
+                else if (boardToRender == game().getHuman().ownBoard)
+                    boardSquares[y].style.backgroundColor = rootStyles.getPropertyValue("--ship-square-color");
             } else {
-                if (hasAttack)
-                    boardSquares[x].style.backgroundColor = rootStyles.getPropertyValue("--empty-square-color");
+                if (boardToRender.hasAttack([x, y]))
+                    boardSquares[y].style.backgroundColor = rootStyles.getPropertyValue("--empty-square-color");
             }
         }
     }
 }
 
-// function makeAttackable(enemyBoard, userBoard) {
-//     const enemyBoardRows = enemyBoard.childNodes;
-//     // console.log(enemyBoardRows); -- returns a NodeList
-//     for (let y = 0; y < 10; ++y) {
-//         const boardSquares = enemyBoardRows[y].childNodes;
-//         for (let x = 0; x < 10; ++x) {
-//             boardSquares[x].addEventListener('click', () => {
-//                 console.log(mainGame().getEnemy().ownBoard);
-//                 console.log(mainGame().getHuman().ownBoard);
-//                 renderBoard(mainGame().getEnemy().ownBoard, enemyBoard);
-//                 renderBoard(mainGame().getHuman().ownBoard, userBoard);
 
-//                 let finishedCheck = mainGame().hasGameFinished();
-//                 // console.log(finishedCheck); -- returns true
-//                 // console.log(mainGame().getHuman().ownBoard.allSunk()); -- returns true
-//                 // console.log(mainGame().getEnemy().ownBoard.allSunk()); -- returns true
-//                 // console.log(mainGame); -- returns a function
-//                 if (finishedCheck)
-//                     loadGameEndingPopUp();
-//             });
-//         }
-//     }
-// }
 function makeAttackable(enemyBoard, userBoard) {
-    const enemy = game.getEnemy();
-    const human = game.getHuman();
     const enemyBoardRows = enemyBoard.childNodes;
+    for (let x = 0; x < 10; ++x) {
+        const boardSquares = enemyBoardRows[x].childNodes;
+        for (let y = 0; y < 10; ++y) {
+            boardSquares[y].addEventListener('click', () => {
+                game.playRound([x, y]);
+                renderBoard(game.getEnemy().ownBoard, enemyBoard);
+                renderBoard(game.getHuman().ownBoard, userBoard);
 
-    for (let y = 0; y < 10; ++y) {
-        const enemyBoardSquares = enemyBoardRows[y].childNodes;
-        const userBoardSquares = userBoard.childNodes[y].childNodes;
-
-        for (let x = 0; x < 10; ++x) {
-            const square = enemyBoardSquares[x];
-
-            square.addEventListener('click', () => {
-                if (human.attack([y, x], enemy.ownBoard)) {
-                    square.classList.add("hit");
-                    if (enemy.hasLost()) {
-                        loadGameEndingPopUp(true);
-                    }
-                } else {
-                    square.classList.add("miss");
-                }
-
-                // Check if the game has finished after each attack
-                if (human.hasLost() || enemy.hasLost()) {
-                    loadGameEndingPopUp(false);
-                }
-
-                // Enemy makes a random attack
-                enemy.randomAttack(human.ownBoard);
-
-                // Update the user board with the enemy's attack
-                const userSquare = userBoardSquares[x];
-                if (human.ownBoard[y][x] === 0) {
-                    userSquare.classList.add("miss");
-                } else if (human.ownBoard[y][x] === 1) {
-                    userSquare.classList.add("hit");
-                }
+                if (game.hasGameFinished())
+                    loadGameEndingPopUp();
             });
         }
     }
@@ -254,12 +166,12 @@ function loadGameEndingPopUp() {
     popUp.classList.add("popUp");
 
     const heading = document.createElement("h2");
-    heading.textContent = mainGame().getHuman().ownBoard.allSunk() ? "You lost" : "You won";
+    heading.textContent = game.getHuman().ownBoard.allSunk ? "You lost" : "You won";
 
     const playAgain = document.createElement("button");
     playAgain.textContent = "Play again";
     playAgain.addEventListener("click", () => {
-        mainGame.restartGame;
+        game.restartGame;
         resetBoardAppearance(document.querySelector(".user"));
         resetBoardAppearance(document.querySelector(".enemy"));
         background.remove();
@@ -278,5 +190,3 @@ function resetBoardAppearance(boardToReset) {
         }
     }
 }
-
-module.exports = loadUI;

@@ -3,8 +3,8 @@ const player = require('./player.js');
 
 // main game loop
 // 1. create players
-function mainGame() {
-    console.log("mainGame function called");
+export const game = function() {
+    console.log("exmainGame function called");
 
     let human = player();
     let enemy = player();
@@ -13,10 +13,10 @@ function mainGame() {
     // play round: recieve human choice, if square hit: true return, if not, human.attack, computer.randomAttack
     function playRound(humanChoice) {
         // check if gameOver is true
-        if (human.ownBoard.allSunk() || enemy.enemyBoard.allSunk()) {
+        if (human.ownBoard.allSunk() || enemy.ownBoard.allSunk()) {
             return;
         }
-        if (enemy.enemyBoard.isHit(humanChoice))
+        if (enemy.ownBoard.isHit(humanChoice))
             return;
         human.attack(humanChoice, enemy);
         enemy.randomAttack(human);
@@ -32,13 +32,13 @@ function mainGame() {
     }
 
     function hasGameFinished() {
-        return human.ownBoard.allSunk() || enemy.enemyBoard.allSunk();
+        return human.ownBoard.allSunk() || enemy.ownBoard.allSunk();
     }
 
     // restart game
     function restartGame() {
         human.ownBoard.resetBoard();
-        enemy.enemyBoard.resetBoard();
+        enemy.ownBoard.resetBoard();
         turn = 0;
     };
 
@@ -51,6 +51,4 @@ function mainGame() {
         restartGame
     }
 }
-
-module.exports = mainGame;
 
