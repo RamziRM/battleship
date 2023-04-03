@@ -4,7 +4,7 @@
 }
 
 :root {
-    --main-background-color: rgb(238, 238, 238);
+    --main-background-color: darkslategrey;
     --ship-square-color: rgb(68, 68, 68);
     --empty-square-color: rgb(133, 255, 179);;
     --hit-ship-square-color: rgb(255, 133, 133);;
