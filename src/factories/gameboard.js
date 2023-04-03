@@ -36,7 +36,7 @@
                 }
             }
         }
-        console.log(board);
+        // console.log(board);
 
         // Receive attack
         // coords = [y, x]

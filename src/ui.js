@@ -3,38 +3,18 @@ const mainGame = require('./mainGame.js');
 const ship = require('./factories/ship.js');
 const gameboard = require('./factories/gameboard.js');
 
-const startArr = [];
 const game = mainGame();
 // create the UI fully through JS
+mainGame().getHuman().placeShipsRandomly();
+mainGame().getEnemy().placeShipsRandomly();
 
-function loadUI(mainGame) {
+function loadUI() {
     const header = createHeader();
     const mainContent = createMainContent();
     const footer = createFooter();
 
     document.body.append(header, mainContent, footer);
-    shipPlacementPopUp();
-}
-
-function shipPlacementPopUp() {
-    const background = document.createElement("div");
-    background.classList.add("overlay");
-
-    const popUp = document.createElement("div");
-    popUp.classList.add("popUp");
-
-    const heading = document.createElement("h2");
-    heading.textContent = "Welcome to the battleship game";
-
-    const info = document.createElement("span");
-    info.textContent = "Place your ships";
-
-    const rotateButton = document.createElement("button");
-    rotateButton.addEventListener('click', () => {
-        isHorizontal = !isHorizontal;
-    });
-    rotateButton.textContent = "Rotate";
-
+    // shipPlacementPopUp();
     const userBoard = createInitialBoard();
     userBoard.classList.add("interactible");
     let isHorizontal = true;
@@ -45,39 +25,87 @@ function shipPlacementPopUp() {
 
     const human = game.getHuman();
     const board = human.ownBoard;
+    // console.log(board);
+
+//
+
+    renderBoard(board, userBoard);
+    const boardOnScreen = document.querySelector(".user");
+    renderBoard(board, boardOnScreen);
+    // console.log(boardOnScreen);
     console.log(board);
+}
+
+// console.log(mainGame().getHuman().placeShipsRandomly);
+mainGame().getHuman().placeShipsRandomly();
+mainGame().getEnemy().placeShipsRandomly();
+
+
+
+// function shipPlacementPopUp() {
+//     const background = document.createElement("div");
+//     background.classList.add("overlay");
+
+    // const popUp = document.createElement("div");
+    // popUp.classList.add("popUp");
+
+    // const heading = document.createElement("h2");
+    // heading.textContent = "Welcome to the battleship game";
+
+    // const info = document.createElement("span");
+    // info.textContent = "Place your ships";
+
+    // const rotateButton = document.createElement("button");
+    // rotateButton.addEventListener('click', () => {
+    //     isHorizontal = !isHorizontal;
+    // });
+    // rotateButton.textContent = "Rotate";
+
+    // const userBoard = createInitialBoard();
+    // userBoard.classList.add("interactible");
+    // let isHorizontal = true;
+    // let current = 0;
+    // const shipLengths = [5, 4, 3, 3, 2];
+
+    // const boardRows = userBoard.childNodes;
+
+    // const human = game.getHuman();
+    // const board = human.ownBoard;
+    // console.log(board);
 
     // const boardTest = game.getHuman;
     // console.log(boardTest);
 
-    for (let y = 0; y < 10; ++y) {
-        const boardSquares = boardRows[y].childNodes;
-        for (let x = 0; x < 10; ++x) {
-            boardSquares[y].addEventListener('click', () => {
-                if (board.isOutOfBounds(startArr, shipLengths[current], isHorizontal) || board.willOverlap(startArr, shipLengths[current], isHorizontal))
-                // why does this not work?
-                // answer: because it's not a function, it's a property 
-                // how to fix: add () after the function name - solution:
-                    return ;
-                board.placeShip(startArr, shipLengths[current], isHorizontal);
-                renderBoard(board, userBoard);
+    // for (let y = 0; y < 10; ++y) {
+    //     const boardSquares = boardRows[y].childNodes;
+    //     for (let x = 0; x < 10; ++x) {
+    //         boardSquares[y].addEventListener('click', () => {
+    //             if (board.isOutOfBounds([y, x], shipLengths[current], isHorizontal) || board.willOverlap([y, x], shipLengths[current], isHorizontal))
+    //             // why does this not work?
+    //             // answer: because it's not a function, it's a property 
+    //             // how to fix: add () after the function name - solution:
+    //                 return ;
+    //             board.placeShip([y, x], shipLengths[current], isHorizontal);
+    //             renderBoard(board, userBoard);
 
-                if (current++ == 4) {
-                    const boardOnScreen = document.querySelector(".user");
-                    renderBoard(board, boardOnScreen);
-                    background.remove();
-                }
-            });
-        }
-    }
+    //             if (current++ == 4) {
+    //                 const boardOnScreen = document.querySelector(".user");
+    //                 renderBoard(board, boardOnScreen);
+    //                 background.remove();
+    //             }
+    //         });
+    //     }
+    // }
 
-    mainGame().getEnemy.placeShipsRandomly;
+    // mainGame().getHuman.placeShipsRandomly;
+    // mainGame().getEnemy.placeShipsRandomly;
 
-    popUp.append(heading, info, rotateButton, userBoard);
-    background.appendChild(popUp);
+    // popUp.append(heading, info, rotateButton, userBoard);
+    // background.appendChild(popUp);
 
-    document.body.appendChild(background);
-}
+    // document.body.appendChild(background);
+    // background.remove();
+// }
 
 function createHeader() {
     const header = document.createElement("header");
@@ -107,11 +135,11 @@ function createInitialBoard() {
     let board = document.createElement("div");
     board.classList.add("board");
     
-    for (let x = 0; x < 10; ++x) {
+    for (let y = 0; y < 10; ++y) {
         let boardRow = document.createElement("div");
         boardRow.classList.add("board-row");
 
-        for (let y = 0; y < 10; ++y) {
+        for (let x = 0; x < 10; ++x) {
             let square = document.createElement("div");
             square.classList.add("board-square");
             boardRow.appendChild(square);
@@ -122,19 +150,25 @@ function createInitialBoard() {
 }
 
 function renderBoard(boardToRender, boardOnScreen) {
-    const rootStyles = getComputedStyle(document.documentElement);
+    const rootStyles = getComputedStyle(boardOnScreen);
     const boardOnScreenRows = boardOnScreen.childNodes;
-    for (let x = 0; x < 10; ++x) {
-        const boardSquares = boardOnScreenRows[x].childNodes;
-        for (let y = 0; y < 10; ++y) {
-            if (boardToRender.hasShip(startArr) != -1) {
-                if (boardToRender.hasAttack(startArr))
-                    boardSquares[y].style.backgroundColor = rootStyles.getPropertyValue("--hit-ship-square-color");
+    for (let y = 0; y < 10; ++y) {
+        const boardSquares = boardOnScreenRows[y].childNodes;
+        for (let x = 0; x < 10; ++x) {
+            let square = boardSquares[x];
+            // console.log(square);
+            // console.log(boardToRender);
+            // console.log(boardToRender.hasShip([y, x]));
+            let hasShip = boardToRender.hasShip([y, x]);
+            let hasAttack = boardToRender.hasAttack([y, x]);
+            if (hasShip != -1) {
+                if (boardToRender.hasAttack([y, x]))
+                    boardSquares[x].style.backgroundColor = rootStyles.getPropertyValue("--hit-ship-square-color");
                 else if (boardToRender == mainGame().getHuman.ownBoard)
-                    boardSquares[y].style.backgroundColor = rootStyles.getPropertyValue("--ship-square-color");
+                    boardSquares[x].style.backgroundColor = rootStyles.getPropertyValue("--ship-square-color");
             } else {
-                if (boardToRender.hasBeenAttacked(startArr))
-                    boardSquares[y].style.backgroundColor = rootStyles.getPropertyValue("--empty-square-color");
+                if (boardToRender.hasAttack([y, x]))
+                    boardSquares[x].style.backgroundColor = rootStyles.getPropertyValue("--empty-square-color");
             }
         }
     }
@@ -142,14 +176,18 @@ function renderBoard(boardToRender, boardOnScreen) {
 
 function makeAttackable(enemyBoard, userBoard) {
     const enemyBoardRows = enemyBoard.childNodes;
-    for (let x = 0; x < 10; ++x) {
-        const boardSquares = enemyBoardRows[x].childNodes;
-        for (let y = 0; y < 10; ++y) {
-            boardSquares[y].addEventListener('click', () => {
-                renderBoard(mainGame().getEnemy.ownBoard, enemyBoard);
-                renderBoard(mainGame().getHuman.ownBoard, userBoard);
+    // console.log(enemyBoardRows); -- returns a NodeList
+    for (let y = 0; y < 10; ++y) {
+        const boardSquares = enemyBoardRows[y].childNodes;
+        for (let x = 0; x < 10; ++x) {
+            boardSquares[x].addEventListener('click', () => {
+                console.log(mainGame().getEnemy().ownBoard);
+                console.log(mainGame().getHuman().ownBoard);
+                renderBoard(mainGame().getEnemy().ownBoard, enemyBoard);
+                renderBoard(mainGame().getHuman().ownBoard, userBoard);
 
-                if (mainGame.hasGameFinished())
+                let finishedCheck = mainGame().hasGameFinished();
+                if (finishedCheck)
                     loadGameEndingPopUp();
             });
         }
@@ -173,7 +211,7 @@ function loadGameEndingPopUp() {
     popUp.classList.add("popUp");
 
     const heading = document.createElement("h2");
-    heading.textContent = mainGame.getHuman.ownBoard.allSunk() ? "You lost" : "You won";
+    heading.textContent = mainGame().getHuman().ownBoard.allSunk() ? "You lost" : "You won";
 
     const playAgain = document.createElement("button");
     playAgain.textContent = "Play again";
@@ -191,9 +229,9 @@ function loadGameEndingPopUp() {
 }
 
 function resetBoardAppearance(boardToReset) {
-    for (let x = 0; x < 10; ++x) {
-        for (let y = 0; y < 10; ++y) {
-            boardToReset.childNodes[x].childNodes[y].style.removeProperty("background-color");
+    for (let y = 0; y < 10; ++y) {
+        for (let x = 0; x < 10; ++x) {
+            boardToReset.childNodes[y].childNodes[x].style.removeProperty("background-color");
         }
     }
 }
