@@ -14,7 +14,7 @@ function player() {
             x = Math.floor(Math.random() * 10);
             y = Math.floor(Math.random() * 10);
         }
-        pToAttack.ownBoard.receiveAttack([y, x]);
+        attack([y, x], pToAttack); // add pToAttack as an argument
     }
 
     // place ships randomly 
