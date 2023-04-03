@@ -1,6 +1,6 @@
 // import
-import { game } from "./mainGame.js";
-import { ship } from "./factories/ship.js";
+import {game} from "./mainGame.js";
+import { ship } from "./ship.js";
 
 
 export function loadUI() {
@@ -39,7 +39,7 @@ function loadShipPlacementPopUp() {
     const shipLengths = [5, 4, 3, 3, 2];
 
     const boardRows = userBoard.childNodes;
-    const board = game().getHuman().ownBoard;
+    const board = game.getHuman().ownBoard;
     for (let x = 0; x < 10; ++x) {
         const boardSquares = boardRows[x].childNodes;
         for (let y = 0; y < 10; ++y) {
@@ -124,7 +124,8 @@ function renderBoard(boardToRender, boardOnScreen) {
         for (let y = 0; y < 10; ++y) {
             if (boardToRender.hasShip([x, y]) != -1) {
                 console.log("has ship");
-                console.log(game.getHuman())
+                console.log(game().getHuman())
+                console.log(game)
                 if (boardToRender.hasAttack([x, y]))
                     boardSquares[y].style.backgroundColor = rootStyles.getPropertyValue("--hit-ship-square-color");
                 else if (boardToRender == game.getHuman().ownBoard) {

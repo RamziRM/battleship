@@ -1,6 +1,6 @@
-import { gameboard } from "./factories/gameboard";
+import { gameboard } from "./gameboard";
 
-function player() {
+export const player = function() {
     const ownBoard = gameboard();
 
     function attack(coords, pToAttack) {
@@ -53,5 +53,3 @@ function player() {
         findLegalCord
     };
 }
-
-module.exports = player;
