@@ -1,7 +1,7 @@
-    const Ship = require('./ship');
+import {ship} from "./ship";
 
     // Gameboard factory function
-    function Gameboard() {
+    export const gameboard = function() {
         const board = [];
         const ships = [];
 
@@ -23,7 +23,7 @@
         // startArr[0] = y - (row) -- startArr[1] = x - (col)
         function placeShip(startArr, length, isHorizontal) {
             // new Ship object with length
-            let shipToPlace = Ship(length);
+            let shipToPlace = ship(length);
             // push to empty ships array
             ships.push(shipToPlace);
             if (isHorizontal) {
@@ -51,10 +51,7 @@
             return board[coords[0]][coords[1]].hit;
         }
 
-        function hasShip(coords) {
-            if (coords[0] < 0 || coords[0] >= board.length || coords[1] < 0 || coords[1] >= board[0].length) {
-                return false; // coordinates are out of bounds
-            }
+        const hasShip = (coords) => {
             return (board[coords[0]][coords[1]].containsShip);
         }
         
@@ -124,5 +121,3 @@
             resetBoard
         };
     }
-
-    module.exports = Gameboard;

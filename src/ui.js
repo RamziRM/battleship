@@ -1,7 +1,7 @@
 // import
-import {game} from "./mainGame.js";
-const ship = require('./factories/ship.js');
-const gameboard = require('./factories/gameboard.js');
+import { game } from "./mainGame.js";
+import { ship } from "./factories/ship.js";
+
 
 export function loadUI() {
     const header = createHeader();
@@ -47,10 +47,14 @@ function loadShipPlacementPopUp() {
                 console.log("Clicked square");
                 if (board.isOutOfBounds([x, y], shipLengths[current], isHorizontal) || board.willOverlap([x, y], shipLengths[current], isHorizontal))
                     return alert("Invalid placement");
+
                 board.placeShip([x, y], shipLengths[current], isHorizontal);
+                console.log(board.getBoard());
+                console.log(board.shipCount());
                 renderBoard(board, userBoard);
                 if (current < 5) {
                     current++;
+                    console.log(current);
                 } else {
                     const boardOnScreen = document.querySelector(".user");
                     renderBoard(board, boardOnScreen);
@@ -119,13 +123,17 @@ function renderBoard(boardToRender, boardOnScreen) {
         const boardSquares = boardOnScreenRows[x].childNodes;
         for (let y = 0; y < 10; ++y) {
             if (boardToRender.hasShip([x, y]) != -1) {
+                console.log("has ship");
+                console.log(game.getHuman())
                 if (boardToRender.hasAttack([x, y]))
                     boardSquares[y].style.backgroundColor = rootStyles.getPropertyValue("--hit-ship-square-color");
-                else if (boardToRender == game().getHuman().ownBoard)
+                else if (boardToRender == game.getHuman().ownBoard) {
+                    console.log('add ship color here')
                     boardSquares[y].style.backgroundColor = rootStyles.getPropertyValue("--ship-square-color");
             } else {
                 if (boardToRender.hasAttack([x, y]))
                     boardSquares[y].style.backgroundColor = rootStyles.getPropertyValue("--empty-square-color");
+                }
             }
         }
     }

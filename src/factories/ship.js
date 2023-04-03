@@ -1,7 +1,7 @@
 // Ship factory function
 // ship type?, length, number of hits, isSunk status
 
-function Ship(length) {
+export const ship = function (length) {
     let hits = 0;
 
     function hit() {
@@ -22,5 +22,3 @@ function Ship(length) {
         getHits
     };
 }
-
-module.exports = Ship;
