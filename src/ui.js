@@ -44,7 +44,6 @@ function loadShipPlacementPopUp() {
         const boardSquares = boardRows[x].childNodes;
         for (let y = 0; y < 10; ++y) {
             boardSquares[y].addEventListener('click', () => {
-                console.log("Clicked square");
                 if (board.isOutOfBounds([x, y], shipLengths[current], isHorizontal) || board.willOverlap([x, y], shipLengths[current], isHorizontal))
                     return alert("Invalid placement");
 
@@ -52,8 +51,7 @@ function loadShipPlacementPopUp() {
                 console.log(board.getBoard());
                 console.log(board.shipCount());
                 renderBoard(board, userBoard);
-                if (current < 5) {
-                    current++;
+                if (current++ == 4) {
                     console.log(current);
                 } else {
                     const boardOnScreen = document.querySelector(".user");
@@ -124,8 +122,6 @@ function renderBoard(boardToRender, boardOnScreen) {
         for (let y = 0; y < 10; ++y) {
             if (boardToRender.hasShip([x, y]) != -1) {
                 console.log("has ship");
-                console.log(game.getHuman())
-                console.log(game)
                 if (boardToRender.hasAttack([x, y]))
                     boardSquares[y].style.backgroundColor = rootStyles.getPropertyValue("--hit-ship-square-color");
                 else if (boardToRender == game.getHuman().ownBoard) {
@@ -175,7 +171,7 @@ function loadGameEndingPopUp() {
     popUp.classList.add("popUp");
 
     const heading = document.createElement("h2");
-    heading.textContent = game.getHuman().ownBoard.allSunk ? "You lost" : "You won";
+    heading.textContent = game.getHuman().ownBoard.allSunk() ? "You lost" : "You won";
 
     const playAgain = document.createElement("button");
     playAgain.textContent = "Play again";
@@ -184,7 +180,7 @@ function loadGameEndingPopUp() {
         resetBoardAppearance(document.querySelector(".user"));
         resetBoardAppearance(document.querySelector(".enemy"));
         background.remove();
-        // shipPlacementPopUp();
+        loadShipPlacementPopUp();
     });
 
     popUp.append(heading, playAgain);
